@@ -33,6 +33,12 @@ The status line shown inside the Codex TUI is Codex's native `/statusline`, not 
 | Available fields | Built-in Codex items only | Can read Codex config, logs, SQLite, git, and future providers |
 | Best for | Stable native model/dir/limits display | Experiments, richer telemetry, tmux/zellij/Warp, OpenCode/Claude support |
 
+## Why This Is Not Like Claude Yet
+
+Claude Code supports a command-backed status line: Claude runs a script, passes session JSON on stdin, and renders the script output inside the TUI. That is what projects like `ClaudeCodeStatusLine` use.
+
+Codex does not currently expose that same custom command hook. Codex's native `/statusline` is a picker for built-in items. The long-term goal for this project is to become the command/provider used by Codex if Codex adds command-backed statusline support. Until then, `agent-statusline` is a companion CLI and integration target for shells, tmux, zellij, Warp, and future providers.
+
 ## Extra Codex Telemetry CLI
 
 - current/last Codex model
@@ -89,6 +95,7 @@ agent-statusline codex --no-color
 ## Roadmap
 
 - [x] Codex local log/config provider
+- [ ] Track Codex command-backed/custom statusline support
 - [ ] Codex rate-limit/source-of-truth research
 - [ ] tmux/zellij snippets
 - [ ] OpenCode provider

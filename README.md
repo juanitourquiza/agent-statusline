@@ -4,7 +4,25 @@ Generic statusline for AI coding assistants. The project starts with **Codex** s
 
 Inspired by [`daniel3303/ClaudeCodeStatusLine`](https://github.com/daniel3303/ClaudeCodeStatusLine), but the Codex implementation reads local Codex state instead of Claude Code `statusLine` stdin.
 
-## What Codex shows today
+## Codex Native Status Line
+
+Codex has a native status line configured in `~/.codex/config.toml` under `[tui]`:
+
+```toml
+[tui]
+status_line = ["model-with-reasoning", "current-dir", "project-name", "git-branch"]
+status_line_use_colors = true
+```
+
+Install the recommended native Codex status line:
+
+```bash
+~/.agent-statusline/bin/install-codex-statusline
+```
+
+The native Codex picker currently exposes built-in items such as model, reasoning, current directory, project name, and git branch. The richer CLI below exists for extra local telemetry that is not available as a native item yet.
+
+## Extra Codex Telemetry CLI
 
 - current/last Codex model
 - current workspace folder, git branch, and added/deleted diff stats
@@ -48,7 +66,7 @@ Optional environment variables:
 
 ## Shell integration ideas
 
-Codex currently does not expose the same command-based `statusLine` hook that Claude Code exposes. Until a first-class Codex TUI hook exists, this CLI can be used from shell prompts, tmux, zellij, Warp workflows, or external status bars.
+Codex has native built-in status line items. For fields beyond those built-ins, this CLI can be used from shell prompts, tmux, zellij, Warp workflows, or external status bars.
 
 Example zsh prompt segment:
 

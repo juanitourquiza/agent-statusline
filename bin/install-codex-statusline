@@ -1,0 +1,89 @@
+#!/usr/bin/env python3
+"""Install the recommended native Codex status line configuration."""
+from __future__ import annotations
+
+import os
+import shutil
+from datetime import datetime
+from pathlib import Path
+
+
+ITEMS = [
+    "model-with-reasoning",
+    "current-dir",
+    "project-name",
+    "git-branch",
+]
+
+
+def toml_list(values: list[str]) -> str:
+    return "[" + ", ".join(f'"{value}"' for value in values) + "]"
+
+
+def upsert_tui_config(text: str) -> str:
+    lines = text.splitlines()
+    out: list[str] = []
+    in_tui = False
+    saw_tui = False
+    wrote_status_line = False
+    wrote_colors = False
+
+    for line in lines:
+        stripped = line.strip()
+        is_table = stripped.startswith("[") and stripped.endswith("]")
+
+        if is_table:
+            if in_tui:
+                if not wrote_status_line:
+                    out.append(f"status_line = {toml_list(ITEMS)}")
+                if not wrote_colors:
+                    out.append("status_line_use_colors = true")
+            in_tui = stripped == "[tui]"
+            saw_tui = saw_tui or in_tui
+
+        if in_tui and stripped.startswith("status_line ="):
+            out.append(f"status_line = {toml_list(ITEMS)}")
+            wrote_status_line = True
+            continue
+        if in_tui and stripped.startswith("status_line_use_colors ="):
+            out.append("status_line_use_colors = true")
+            wrote_colors = True
+            continue
+
+        out.append(line)
+
+    if in_tui:
+        if not wrote_status_line:
+            out.append(f"status_line = {toml_list(ITEMS)}")
+        if not wrote_colors:
+            out.append("status_line_use_colors = true")
+
+    if not saw_tui:
+        if out and out[-1].strip():
+            out.append("")
+        out.extend(["[tui]", f"status_line = {toml_list(ITEMS)}", "status_line_use_colors = true"])
+
+    return "\n".join(out).rstrip() + "\n"
+
+
+def main() -> int:
+    codex_home = Path(os.environ.get("CODEX_HOME", "~/.codex")).expanduser()
+    config_path = codex_home / "config.toml"
+    codex_home.mkdir(parents=True, exist_ok=True)
+
+    old_text = config_path.read_text() if config_path.exists() else ""
+    new_text = upsert_tui_config(old_text)
+
+    if config_path.exists() and old_text != new_text:
+        stamp = datetime.now().strftime("%Y%m%d%H%M%S")
+        shutil.copy2(config_path, config_path.with_suffix(f".toml.bak.agent-statusline.{stamp}"))
+
+    config_path.write_text(new_text)
+    print(f"Updated {config_path}")
+    print(f"status_line = {toml_list(ITEMS)}")
+    print("Restart Codex or open a new TUI session to see the change.")
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

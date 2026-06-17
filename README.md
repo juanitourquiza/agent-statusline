@@ -22,6 +22,17 @@ Install the recommended native Codex status line:
 
 The native Codex picker currently exposes built-in items such as model, reasoning, current directory, project name, and git branch. The richer CLI below exists for extra local telemetry that is not available as a native item yet.
 
+## Native `/statusline` vs `agent-statusline`
+
+The status line shown inside the Codex TUI is Codex's native `/statusline`, not this project's CLI output. This project currently complements the native bar; it does not replace it automatically.
+
+| Feature | Codex `/statusline` | `agent-statusline` |
+| --- | --- | --- |
+| Runs inside the Codex TUI | Yes | Not yet |
+| Configuration | `/statusline` UI or `[tui].status_line` | CLI arguments and future adapters |
+| Available fields | Built-in Codex items only | Can read Codex config, logs, SQLite, git, and future providers |
+| Best for | Stable native model/dir/limits display | Experiments, richer telemetry, tmux/zellij/Warp, OpenCode/Claude support |
+
 ## Extra Codex Telemetry CLI
 
 - current/last Codex model

@@ -1,0 +1,2 @@
+post sampling token usage turn_id=abc total_usage_tokens=48088 auto_compact_scope_tokens=48088 estimated_token_count=Some(37832) auto_compact_scope_limit=244800
+codex.turn.reasoning_effort=medium}:session_task.run:run_turn:run_sampling_request{turn_id=abc model=gpt-5.5 cwd=/tmp/example}
